@@ -1,0 +1,32 @@
+name: Practica de Variables
+
+on:
+  push:
+  workflow_dispatch:
+
+# Variable a nivel de workflow (sirve en todos los jobs)
+env:
+  SALUDO: Hola
+
+jobs:
+  usar-variables:
+    runs-on: ubuntu-latest
+    # Variable a nivel de job
+    env:
+      CIUDAD: Bogota
+    steps:
+      - name: Variables configuradas en GitHub (vars)
+        run: |
+          echo "Proyecto: ${{ vars.NOMBRE_PROYECTO }}"
+          echo "Autor: ${{ vars.AUTOR }}"
+
+      - name: Variables definidas en el archivo (env)
+        run: |
+          echo "$SALUDO desde $CIUDAD"
+          echo "Paso con variable propia: $PASO"
+        env:
+          PASO: tercero
+
+      - name: Usar un secreto
+        run: |
+          echo "El secreto es: ${{ secrets.MI_SECRETO }}"
