@@ -1,0 +1,42 @@
+name: Practica de Contextos
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  explorar-contextos:
+    runs-on: ubuntu-latest
+    steps:
+      # Idea 1: contexto github → quién ejecutó
+      - name: Bienvenida
+        run: echo "¡Hola ${{ github.actor }}! Bienvenido al repo ${{ github.repository }}"
+
+      # Idea 2: contexto github → validar la rama
+      - name: Simular despliegue (solo en main)
+        if: github.ref == 'refs/heads/main'
+        run: echo "Desplegando a producción..."
+
+      - name: Aviso si no es main
+        if: github.ref != 'refs/heads/main'
+        run: echo "No se despliega. Estás en ${{ github.ref }}"
+
+      # Idea 3: contexto runner → datos del servidor
+      - name: Datos del runner
+        run: |
+          echo "Sistema operativo: ${{ runner.os }}"
+          echo "Arquitectura: ${{ runner.arch }}"
+          echo "Nombre del runner: ${{ runner.name }}"
+
+      # Bonus: contexto steps → usar la salida de un paso anterior
+      - name: Generar un dato
+        id: dato
+        run: echo "hora=$(date +'%H:%M')" >> $GITHUB_OUTPUT
+
+      - name: Leer el dato del paso anterior
+        run: echo "El paso anterior se ejecutó a las ${{ steps.dato.outputs.hora }} (UTC)"
+
+      # Bonus: contexto job → estado del job
+      - name: Estado del job
+        if: always()
+        run: 'echo "Estado del job: ${{ job.status }}"'

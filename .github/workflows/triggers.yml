@@ -1,0 +1,40 @@
+name: Practica de Triggers
+
+on:
+  # 1. Push, pero solo en estas ramas
+  push:
+    branches:
+      - main
+      - aprendiendo-github-actions
+
+  # 2. Ejecución manual con inputs
+  workflow_dispatch:
+    inputs:
+      nombre:
+        description: 'Nombre a saludar'
+        required: true
+        default: 'Saúl'
+      ambiente:
+        description: 'Ambiente'
+        required: true
+        type: choice
+        options:
+          - desarrollo
+          - produccion
+
+  # 3. Programado: todos los lunes a las 8:00 a.m. (hora UTC)
+  schedule:
+    - cron: '0 8 * * 1'
+
+jobs:
+  mostrar-trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Qué disparó el workflow
+        run: echo "Este workflow se disparó por ${{ github.event_name }}"
+
+      - name: Mostrar inputs (solo si fue manual)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "Hola ${{ inputs.nombre }}"
+          echo "Ambiente: ${{ inputs.ambiente }}"
