@@ -39,4 +39,4 @@ jobs:
       # Bonus: contexto job → estado del job
       - name: Estado del job
         if: always()
-        run: echo "Estado del job: ${{ job.status }}"
+        run: 'echo "Estado del job: ${{ job.status }}"'
