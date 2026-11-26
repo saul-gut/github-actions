@@ -1,0 +1,47 @@
+name: Practica de Expresiones
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      edad:
+        description: 'Tu edad'
+        required: true
+        default: '30'
+
+env:
+  # Expresión con literal y operador ternario (&& ||)
+  AMBIENTE: ${{ github.ref_name == 'main' && 'produccion' || 'desarrollo' }}
+
+jobs:
+  practicar:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Expresión simple: leer un valor de contexto
+      - name: Rama actual
+        run: echo "Estoy en la rama ${{ github.ref_name }}"
+
+      # 2. Operadores de comparación y lógicos en un if
+      - name: Solo si es mayor de edad (ejecución manual)
+        if: github.event_name == 'workflow_dispatch' && inputs.edad >= 18
+        run: echo "Eres mayor de edad"
+
+      # 3. Usar el valor calculado en env
+      - name: Ambiente
+        run: echo "Ambiente calculado: ${{ env.AMBIENTE }}"
+
+      # Bonus: funciones
+      - name: Función contains
+        if: contains(github.event.head_commit.message, 'fix')
+        run: echo "El commit menciona un fix"
+
+      - name: Función startsWith
+        if: startsWith(github.ref_name, 'aprendiendo')
+        run: echo "Es una rama de aprendizaje"
+
+      - name: Función format
+        run: echo "${{ format('Hola {0}, ejecutaste por {1}', github.actor, github.event_name) }}"
+
+      - name: Función always (corre aunque fallen pasos anteriores)
+        if: always()
+        run: echo "Este paso siempre corre"
