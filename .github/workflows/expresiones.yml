@@ -28,7 +28,7 @@ jobs:
 
       # 3. Usar el valor calculado en env
       - name: Ambiente
-        run: echo "Ambiente calculado: ${{ env.AMBIENTE }}"
+        run: 'echo "Ambiente calculado: ${{ env.AMBIENTE }}"'
 
       # Bonus: funciones
       - name: Función contains
